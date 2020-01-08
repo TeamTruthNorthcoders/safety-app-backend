@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  postReviewByPlaceId:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Description: ''
+      Handler: lambda_function.lambda_handler
+      MemorySize: 128
+      Role: >-
+        arn:aws:iam::426121985744:role/service-role/postReviewByPlaceId-role-xw16y33w
+      Runtime: python3.7
+      Timeout: 3
