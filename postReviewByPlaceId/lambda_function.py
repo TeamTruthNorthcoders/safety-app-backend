@@ -9,7 +9,7 @@ def lambda_handler(event, context):
     review_id = str(uuid.uuid4())
     newItem={
             'author': payload["author"],
-            'place_id': payload["place_id"],
+            'place_id': event["pathParameters"]["place_id"],
             'review_id': review_id,
             'rating': payload["rating"],
             'body': payload["review"]
