@@ -66,7 +66,7 @@ returns :
 ```
 
 
-GET reviews by review id
+GET review by review id
 takes review_id "0a16454f-1ef5-4f32-98c1-82255beff330"
 returns : 
 ```
@@ -78,3 +78,8 @@ returns :
   "author": "me"
 }
 ```
+
+
+DELETE review by review_id
+takes review_id as parameter "0a16454f-1ef5-4f32-98c1-82255beff330"
+returns 204 status code
