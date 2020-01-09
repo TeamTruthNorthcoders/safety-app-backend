@@ -11,7 +11,7 @@ def lambda_handler(event, context):
             'author': payload["author"],
             'place_id': event["pathParameters"]["place_id"],
             'review_id': review_id,
-            'rating': payload["rating"],
+            'rating': 0,
             'body': payload["review"]
         }
     table = dynamodb.Table("placeReviews")
