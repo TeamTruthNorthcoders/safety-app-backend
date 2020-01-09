@@ -1,0 +1,7 @@
+{
+    "patchSafeplaceById": {
+        "lambda": {
+            "inc_rating": 1
+        }
+    }
+}
