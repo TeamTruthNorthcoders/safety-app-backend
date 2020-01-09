@@ -4,7 +4,7 @@ import boto3
 dynamodb = boto3.resource("dynamodb")
 
 def lambda_handler(event, context):
-    table = dynamodb.Table("placesTable")
+    table = dynamodb.Table("safeplaceTable")
     # place_id = 'ChIJ0VTAWfCue0gRFM2lcIaciFY'
     place_id = event["pathParameters"]["place_id"]
     response = table.get_item(
