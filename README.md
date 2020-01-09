@@ -83,3 +83,22 @@ returns :
 DELETE review by review_id
 takes review_id as parameter "0a16454f-1ef5-4f32-98c1-82255beff330"
 returns 204 status code
+
+
+
+DELETE safe place by place_id
+takes place_id as a parameter and returns 204 status code
+
+
+
+PATCH review by review_id
+takes a number and increases the rating by it
+```
+{"inc_rating": 1}
+```
+returns the updated object
+```
+{"review_id": 1,
+"author": "bob",
+"rating": 2}
+```
