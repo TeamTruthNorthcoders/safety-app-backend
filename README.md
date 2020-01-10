@@ -1,7 +1,12 @@
 # safety-app-backend
 
+This api was build by using Amazon Web Services. The API is build using API Gateway, which triggers Lambda functions that queries DynamoDB tables.
+It provides the backend for an app directing users who might find themselves in potentially unsafe or uncomfortable situations when in Manchester to safe places near them. 
 
-###Endpoints: 
+The api can be accessed [here](https://2aw2ojaww1.execute-api.eu-west-2.amazonaws.com/api)
+
+
+### Endpoints: 
 
 Endpoint                           | Request | Input | Returns                                                                                                                                                                                                                                                                                                                                                  |
 | ---------------------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
