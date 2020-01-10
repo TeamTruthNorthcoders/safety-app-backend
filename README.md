@@ -1,104 +1,16 @@
 # safety-app-backend
 
 
-Endpoints:
+###Endpoints: 
 
-POST review by place id
-takes body: 
-```
-{
-	"author": "person",
-	"review": "this is a good place",
-	"rating": "4"
-}
-```
-returns : 
-```
-{
-	"place_id": "ChIJ0VTAWfCue0gRFM2lcIaciFY"
-	"review_id": "0a16454f-1ef5-4f32-98c1-82255beff330"
-	"author": "person",
-	"review": "this is a good place",
-	"rating": "4"
-}
-```
-
-
-GET all safeplaces
-no arguments needed
-returns :
-```
- "Items": [
-    {
-      "place_id": "ChIJ0VTAWfCue0gRFM2lcIaciFY"
-    },
-    {
-      "place_id": "ChIJB_4uquyxe0gRcLqDm4_2N4k"
-    },
-    {
-      "place_id": "ChIJMXjRNJOxe0gRtTdRSVb6rb8"
-    }...
-  ]
-```
-
-GET safeplace by place id
-takes place_id "ChIJ0VTAWfCue0gRFM2lcIaciFY" 
-returns : 
-```
-{
-  "place_id": "ChIJ0VTAWfCue0gRFM2lcIaciFY"
-}
-```
-
-GET reviews by place id
-takes place_id "ChIJ0VTAWfCue0gRFM2lcIaciFY" 
-returns : 
-```
-  "Items": [
-    {
-      "place_id": "ChIJ0VTAWfCue0gRFM2lcIaciFY",
-      "rating": "5",
-      "review_id": "1",
-      "author": "NotWeirdo",
-      "body": "Was turbo safe, man"
-    }...
-  ]
-```
-
-
-GET review by review id
-takes review_id "0a16454f-1ef5-4f32-98c1-82255beff330"
-returns : 
-```
-{
-  "rating": "5",
-  "review_id": "0a16454f-1ef5-4f32-98c1-82255beff330",
-  "place_id": "abcdef12345",
-  "body": "super safe",
-  "author": "me"
-}
-```
-
-
-DELETE review by review_id
-takes review_id as parameter "0a16454f-1ef5-4f32-98c1-82255beff330"
-returns 204 status code
-
-
-
-DELETE safe place by place_id
-takes place_id as a parameter and returns 204 status code
-
-
-
-PATCH review by review_id
-takes a number and increases the rating by it
-```
-{"inc_rating": 1}
-```
-returns the updated object
-```
-{"review_id": 1,
-"author": "bob",
-"rating": 2}
-```
+Endpoint                           | Request | Input | Returns                                                                                                                                                                                                                                                                                                                                                  |
+| ---------------------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| /api/safeplaces               | GET   |  | Gets all the safe places from the database. Returns <code>"Items": [ <br> {<br>  "place_id": "ChIJ0VTAWfCue0gRFM2lcIaciFY"},<br>  {"place_id": "ChIJB_4uquyxe0gRcLqDm4_2N4k"}, ...]</code>|                                                                                                                                                       |
+| /api/safeplaces/{place_id}    | GET   | place ID as path parameter | <code>"Item": <br>{<br>"place_id": "ChIJ0VTAWfCue0gRFM2lcIaciFY"}</code>|                                                                                                                                                       |
+| /api/safeplaces/{place_id}    | POST  | place ID as path parameter, <br> TBC  | Returns the posted safeplace |                                                                                                                                                       |
+| /api/safeplaces/{place_id}    | PATCH  | place ID as path parameter, <br> <code>{"inc_rating": 1}</code>  | Returns the posted place. TBC </code>|                                                                                                                                                       |
+| /api/safeplaces/{place_id}    | DELETE  | place ID as path parameter, <br> <code>{"inc_rating": 1}</code>  | Returns 204. |                                                                                                                                                       |
+| /api/safeplaces/{place_id}/reviews   | GET  | place ID as path parameter  | Returns all reviews for a place. <code>"Items": <br>[ <br>{<br>"place_id": "ChIJ0VTAWfCue0gRFM2lcIaciFY",<br>"rating": "5",<br>"review_id": "1",<br>"author": "NotWeirdo",<br>"body": "Was turbo safe, man"<br>}<br>...<br>]</code>|                                                                                                                                                       |
+| /api/safeplaces/{place_id}/reviews   | POST  | place ID as path parameter,<br><code>{<br>"author": "person",<br>"review": "this is a good place",<br>"rating": "4"<br>} | Returns the posted review. <code>{<br>"place_id": "ChIJ0VTAWfCue0gRFM2lcIaciFY",<br>"review_id": "0a16454f-1ef5-4f32-98c1-82255beff330", <br>"author": "person",<br>"review": "this is a good place",<br>"rating": "4"<br>}</code>|                                                                                                                                                       |
+| /api/reviews/{review_id}    | GET   | review ID as path parameter | Returns the specfied review. <code>{<br>"rating": "5",<br> "review_id": "0a16454f-1ef5-4f32-98c1-82255beff330", <br>"place_id": "abcdef12345", <br>"body": "super safe", <br>"author": "me"<br>}</code>|                                                                                                                                                       |
+| /api/reviews/{review_id}    | DELETE   | review ID as path parameter | Returns 204.|                                                                                                                                                       |
