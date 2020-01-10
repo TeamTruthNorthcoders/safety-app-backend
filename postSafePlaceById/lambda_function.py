@@ -8,7 +8,12 @@ def lambda_handler(event, context):
     newItem={
             'author': payload["author"],
             'place_id': event["pathParameters"]["place_id"],
-            'rating': "0"
+            'rating': "0",
+            'formatted_address': payload["formatted_address"],
+            'latitude': payload['latitude'],
+            'longitude': payload['longitude'],
+            'place_name': payload['place_name'],
+            'weekday_text': payload['weekday_text']
         }
     table = dynamodb.Table("placesTable")
     response = table.put_item(
