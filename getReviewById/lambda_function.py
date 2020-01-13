@@ -12,15 +12,14 @@ def lambda_handler(event, context):
         
     if "Item" in response:
         item = response["Item"]
-        # item = "item.....blah blah"
     else:
         return {
             'statusCode': 400,
-            'msg': "nahhh"
+            'body': "Review not found"
         }
         
     return {
         'statusCode': 200,
-        'body': json.dumps(item)
+        'body': json.dumps(item),
     }
     
