@@ -1,5 +1,6 @@
 import json
 import boto3
+from boto3.dynamodb.conditions import Attr
 import decimal
 
 class DecimalEncoder(json.JSONEncoder):
@@ -14,11 +15,19 @@ class DecimalEncoder(json.JSONEncoder):
 dynamodb = boto3.resource("dynamodb")
 
 def lambda_handler(event, context):
-    
-    try:
+    try: 
         table = dynamodb.Table("placeReviewsTable")
-        response = table.scan()
+        
+        if event["queryStringParameters"] is not None: 
+            author = event["queryStringParameters"]["author"]
+            response = table.scan(
+                FilterExpression=Attr('author').contains(author)
+            )
+        else:
+            response = table.scan()
+            
         statusCode = 200
+        
     except:
         statusCode = 500
  
