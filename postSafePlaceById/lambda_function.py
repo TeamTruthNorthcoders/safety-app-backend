@@ -33,7 +33,7 @@ def lambda_handler(event, context):
         statusCode = 400
         body = json.dumps("Missing request parameters")
     else:
-        url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + event[git pull ori   "pathParameters"]["place_id"] + "&key=AIzaSyDbrLDnVEOkT-UDzkM8ahFE44X0z13qnh8"
+        url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + event["pathParameters"]["place_id"] + "&key=AIzaSyDbrLDnVEOkT-UDzkM8ahFE44X0z13qnh8"
         res = requests.get(url)
         google_results = json.loads(res.text)['result']
 
@@ -45,7 +45,8 @@ def lambda_handler(event, context):
             "longitude" : decimal.Decimal(str(google_results["geometry"]["location"]["lng"])),
             "place_name" :google_results["name"],
             "author" : payload["author"],
-            'rating': 0
+            'rating': 0,
+            'rating_count': 0
         }
         if "opening_hours" in google_results:
             newItem["weekday_text"] = google_results["opening_hours"]["weekday_text"]
