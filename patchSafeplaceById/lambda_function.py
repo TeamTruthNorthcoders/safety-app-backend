@@ -1,6 +1,9 @@
-import boto3
 import json
+import boto3
 import decimal
+from botocore.vendored import requests
+
+dynamodb = boto3.resource("dynamodb")
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
@@ -10,44 +13,68 @@ class DecimalEncoder(json.JSONEncoder):
             else:
                 return int(o)
         return super(DecimalEncoder, self).default(o)
-        
-        
-dynamodb = boto3.resource('dynamodb')
-
-table = dynamodb.Table('safeplaceTable')
 
 def lambda_handler(event, context):
+    print(event)
+    payload = json.loads(event["body"])
     
-    if "inc_rating" not in json.loads(event["body"]):
+    requiredParams = [
+        'author']
+        # , 'formatted_address', 'latitude', 'longitude', 'place_name', 'weekday_text'
+        # ]
+    
+
+    missingParams = False
+    
+    for i in requiredParams:
+        if payload.get(i) == None:
+            missingParams = True
+    
+    if missingParams == True:
         statusCode = 400
-        body = "Missing request parameter"
+        body = json.dumps("Missing request parameters")
     else:
-        inc_rating = int(json.dumps(json.loads(event["body"])["inc_rating"]))
+        url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + event["pathParameters"]["place_id"] + "&key=AIzaSyDbrLDnVEOkT-UDzkM8ahFE44X0z13qnh8"
+        res = requests.get(url)
+        google_results = json.loads(res.text)['result']
+
         
-        response = table.update_item(
-            Key={
-            "place_id": event["pathParameters"]["place_id"]
-            },
-        UpdateExpression="SET rating = :new_rating + rating",
-        ExpressionAttributeValues={
-            ':new_rating': inc_rating
-        },
-        ReturnValues="ALL_NEW"
-        )
+        newItem = {
+            'place_id': event["pathParameters"]["place_id"],
+            "formatted_address" : google_results["formatted_address"],
+            "latitude" : decimal.Decimal(str(google_results["geometry"]["location"]["lat"])),
+            "longitude" : decimal.Decimal(str(google_results["geometry"]["location"]["lng"])),
+            "place_name" :google_results["name"],
+            "author" : payload["author"],
+            'rating': 0,
+           'rating_count':0
+           }
+        if "opening_hours" in google_results:
+            newItem["weekday_text"] = google_results["opening_hours"]["weekday_text"]
+        else:
+            newItem["weekday_text"] = ["No opening times given"]
+
+    
+        # newItem={
+        #         'author': payload["author"],
+        #         'place_id': event["pathParameters"]["place_id"],
+        #         'rating': 0,
+        #         'formatted_address': payload["formatted_address"],
+        #         'latitude': decimal.Decimal(str(payload['latitude'])),
+        #         'longitude': decimal.Decimal(str(payload['longitude'])),
+        #         'place_name': payload['place_name'],
+        #         'weekday_text': payload['weekday_text']
+        #     }
+
+        table = dynamodb.Table("safeplaceTable")
+        response = table.put_item(
+            Item = newItem
+            )
         
-        patchedItem = {
-             "author": response["Attributes"]["formatted_address"],
-              "formatted_address": response["Attributes"]["formatted_address"],
-              "place_name": response["Attributes"]["place_name"],
-              "place_id": response["Attributes"]["place_id"],
-              "rating": response["Attributes"]["rating"],
-              "longitude": decimal.Decimal(str(response["Attributes"]["longitude"])),
-              "latitude": decimal.Decimal(str(response["Attributes"]["latitude"])),
-        }
-        statusCode = 200
-        body = json.dumps(patchedItem, cls=DecimalEncoder)
-        
+        statusCode=200
+        body = json.dumps(newItem, cls=DecimalEncoder)
+    
     return {
-        "statusCode": statusCode,
-        "body": body
+        'statusCode': statusCode,
+        'body': body
     }
