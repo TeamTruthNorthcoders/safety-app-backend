@@ -18,19 +18,21 @@ table = dynamodb.Table('safeplaceTable')
 
 def lambda_handler(event, context):
     
-    if "inc_rating" not in json.loads(event["body"]):
+    if "rating_value" not in json.loads(event["body"]):
         statusCode = 400
         body = "Missing request parameter"
     else:
-        inc_rating = int(json.dumps(json.loads(event["body"])["inc_rating"]))
+        req_rating_value = int(json.dumps(json.loads(event["body"])["rating_value"]))
         
         response = table.update_item(
             Key={
             "place_id": event["pathParameters"]["place_id"]
             },
-        UpdateExpression="SET rating = :new_rating + rating",
+        UpdateExpression="SET rating = rating + :req_rating, rating_count = :inc_rating_count + rating_count",
         ExpressionAttributeValues={
-            ':new_rating': inc_rating
+             ':inc_rating_count': 1,
+            ':req_rating' : req_rating_value
+            
         },
         ReturnValues="ALL_NEW"
         )
@@ -40,7 +42,8 @@ def lambda_handler(event, context):
               "formatted_address": response["Attributes"]["formatted_address"],
               "place_name": response["Attributes"]["place_name"],
               "place_id": response["Attributes"]["place_id"],
-              "rating": response["Attributes"]["rating"],
+              "rating": decimal.Decimal(str(response["Attributes"]["rating"])),
+              "rating_count": decimal.Decimal(str(response["Attributes"]["rating_count"])),
               "longitude": decimal.Decimal(str(response["Attributes"]["longitude"])),
               "latitude": decimal.Decimal(str(response["Attributes"]["latitude"])),
         }
