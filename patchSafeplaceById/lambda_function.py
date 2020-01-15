@@ -36,7 +36,6 @@ def lambda_handler(event, context):
         },
         ReturnValues="ALL_NEW"
         )
-        
         patchedItem = {
              "author": response["Attributes"]["formatted_address"],
               "formatted_address": response["Attributes"]["formatted_address"],
