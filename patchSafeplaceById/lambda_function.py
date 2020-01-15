@@ -30,10 +30,15 @@ def lambda_handler(event, context):
         if payload.get(i) == None:
             missingParams = True
     
+<<<<<<< HEAD
     if missingParams == True:
+=======
+    if "rating_value" not in json.loads(event["body"]):
+>>>>>>> 88f1270bfd772c226c1a37aa8987420f016e671d
         statusCode = 400
         body = json.dumps("Missing request parameters")
     else:
+<<<<<<< HEAD
         url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + event["pathParameters"]["place_id"] + "&key=AIzaSyDbrLDnVEOkT-UDzkM8ahFE44X0z13qnh8"
         res = requests.get(url)
         google_results = json.loads(res.text)['result']
@@ -70,6 +75,34 @@ def lambda_handler(event, context):
         response = table.put_item(
             Item = newItem
             )
+=======
+        req_rating_value = int(json.dumps(json.loads(event["body"])["rating_value"]))
+        
+        response = table.update_item(
+            Key={
+            "place_id": event["pathParameters"]["place_id"]
+            },
+        UpdateExpression="SET rating = rating + :req_rating, rating_count = :inc_rating_count + rating_count",
+        ExpressionAttributeValues={
+             ':inc_rating_count': 1,
+            ':req_rating' : req_rating_value
+            
+        },
+        ReturnValues="ALL_NEW"
+        )
+        patchedItem = {
+             "author": response["Attributes"]["formatted_address"],
+              "formatted_address": response["Attributes"]["formatted_address"],
+              "place_name": response["Attributes"]["place_name"],
+              "place_id": response["Attributes"]["place_id"],
+              "rating": decimal.Decimal(str(response["Attributes"]["rating"])),
+              "rating_count": decimal.Decimal(str(response["Attributes"]["rating_count"])),
+              "longitude": decimal.Decimal(str(response["Attributes"]["longitude"])),
+              "latitude": decimal.Decimal(str(response["Attributes"]["latitude"])),
+        }
+        statusCode = 200
+        body = json.dumps(patchedItem, cls=DecimalEncoder)
+>>>>>>> 88f1270bfd772c226c1a37aa8987420f016e671d
         
         statusCode=200
         body = json.dumps(newItem, cls=DecimalEncoder)
