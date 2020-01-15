@@ -2,6 +2,7 @@ import json
 import boto3
 import uuid
 import decimal
+import datetime
 
 class DecimalEncoder(json.JSONEncoder):
     def default(self, o):
@@ -32,12 +33,14 @@ def lambda_handler(event, context):
         statusCode = 400
         body = json.dumps("Missing request parameters")
     else:
+        now = datetime.datetime.now()   
         newItem={
             'author': payload["author"],
             'place_id': event["pathParameters"]["place_id"],
             'review_id': review_id,
-            'rating': 3,
-            'review': payload["review"]
+            'rating': payload["rating"],
+            'review': payload["review"],
+            'date_time': str(now)
         }
     table = dynamodb.Table("placeReviewsTable")
     response = table.put_item(
