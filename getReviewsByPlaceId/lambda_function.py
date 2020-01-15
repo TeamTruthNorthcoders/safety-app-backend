@@ -20,9 +20,15 @@ def lambda_handler(event, context):
     table = dynamodb.Table("placeReviewsTable")
     place_id = event["pathParameters"]["place_id"]
     fe = Key('place_id').eq(place_id)
-    pe = "#author, #rating,#review,#place_id,#review_id"
+    pe = "#author, #rating,#review,#place_id,#review_id,#date_time"
     # Expression Attribute Names for Projection Expression only.
-    ean = {"#author": "author", "#rating": "rating", "#review": "review","#place_id":"place_id","#review_id":"review_id"}
+    ean = {
+        "#author": "author",
+        "#rating": "rating",
+        "#review": "review",
+        "#place_id":"place_id",
+        "#review_id":"review_id",
+        "#date_time":"date_time"}
     esk = None
 
     response = table.scan(
@@ -39,8 +45,8 @@ def lambda_handler(event, context):
         )
     if len(response["Items"]) == 0:
         return {
-            'statusCode': 404,
-            'body': "no reviews found for the place"
+            'statusCode': 200,
+            'body': "There are no reviews for this place yet"
         }
     else:
         return {
