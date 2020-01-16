@@ -20,7 +20,7 @@ def lambda_handler(event, context):
     review_id = str(uuid.uuid4())
     
     requiredParams = [
-        'author', 'review'
+        'author', 'review','rating_value','place_name'
         ]
     
     missingParams = False
@@ -38,8 +38,9 @@ def lambda_handler(event, context):
             'author': payload["author"],
             'place_id': event["pathParameters"]["place_id"],
             'review_id': review_id,
-            'rating': payload["rating"],
+            'rating': payload["rating_value"],
             'review': payload["review"],
+            'place_name' : payload["place_name"],
             'date_time': str(now)
         }
     table = dynamodb.Table("placeReviewsTable")
